@@ -2,10 +2,11 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const loggedIn = request.cookies.get('sb-access-token');
-  const isDashboard = request.nextUrl.pathname.startsWith('/dashboard');
+  const token = request.cookies.get('sb-access-token');
+  const isProtected = request.nextUrl.pathname.startsWith('/dashboard') || 
+                     request.nextUrl.pathname.startsWith('/snippets');
 
-  if (isDashboard && !loggedIn) {
+  if (isProtected && !token) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
@@ -13,5 +14,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*'],
+  matcher: ['/dashboard/:path*', '/snippets/:path*'],
 };
