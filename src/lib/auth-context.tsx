@@ -18,7 +18,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Get initial session
     const getInitialSession = async () => {
+      console.log('AuthContext: Getting initial session...');
       const { data: { user } } = await supabase.auth.getUser();
+      console.log('AuthContext: Initial user:', user);
       setUser(user);
       setLoading(false);
     };
@@ -28,6 +30,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log('AuthContext: Auth state change:', event, session?.user);
         setUser(session?.user ?? null);
         setLoading(false);
       }

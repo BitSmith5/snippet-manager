@@ -4,13 +4,8 @@ import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import ProtectedRoute from '@/components/ProtectedRoute';
-
-type Snippet = {
-  id: string;
-  title: string;
-  content?: string;
-  created_at?: string;
-};
+import SnippetCard from '@/components/SnippetCard';
+import { Snippet } from '@/types/snippet';
 
 function DashboardContent() {
   const [snippets, setSnippets] = useState<Snippet[]>([]);
@@ -50,60 +45,60 @@ function DashboardContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 theme-transition">
       <Header />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Dashboard Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 theme-transition">
             <div className="flex items-center">
-              <div className="p-2 bg-indigo-100 rounded-lg">
-                <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-2 bg-indigo-100 dark:bg-indigo-900 rounded-lg">
+                <svg className="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total Snippets</p>
-                <p className="text-2xl font-semibold text-gray-900">{stats.totalSnippets}</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Total Snippets</p>
+                <p className="text-2xl font-semibold text-gray-900 dark:text-white">{stats.totalSnippets}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 theme-transition">
             <div className="flex items-center">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
+                <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Recent (7 days)</p>
-                <p className="text-2xl font-semibold text-gray-900">{stats.recentSnippets}</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Recent (7 days)</p>
+                <p className="text-2xl font-semibold text-gray-900 dark:text-white">{stats.recentSnippets}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 theme-transition">
             <div className="flex items-center">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
+                <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Quick Actions</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Quick Actions</p>
                 <Link 
                   href="/snippets/new"
-                  className="text-blue-600 hover:text-blue-800 font-medium"
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
                 >
                   Create New
                 </Link>
@@ -113,13 +108,13 @@ function DashboardContent() {
         </div>
 
         {/* Recent Snippets */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow theme-transition">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <div className="flex justify-between items-center">
-              <h2 className="text-lg font-medium text-gray-900">Recent Snippets</h2>
+              <h2 className="text-lg font-medium text-gray-900 dark:text-white">Recent Snippets</h2>
               <Link
                 href="/snippets"
-                className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+                className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 text-sm font-medium"
               >
                 View All
               </Link>
@@ -128,15 +123,15 @@ function DashboardContent() {
           <div className="p-6">
             {snippets.length === 0 ? (
               <div className="text-center py-8">
-                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                <h3 className="mt-2 text-sm font-medium text-gray-900">No snippets yet</h3>
-                <p className="mt-1 text-sm text-gray-500">Get started by creating your first snippet.</p>
+                <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No snippets yet</h3>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by creating your first snippet.</p>
                 <div className="mt-6">
                   <Link
                     href="/snippets/new"
-                    className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                    className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600"
                   >
                     Create Snippet
                   </Link>
@@ -145,31 +140,7 @@ function DashboardContent() {
             ) : (
               <div className="space-y-4">
                 {snippets.map((snippet) => (
-                  <div key={snippet.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h3 className="text-sm font-medium text-gray-900">
-                          <Link href={`/snippets/${snippet.id}`} className="hover:text-indigo-600">
-                            {snippet.title}
-                          </Link>
-                        </h3>
-                        {snippet.content && (
-                          <p className="mt-1 text-sm text-gray-500 line-clamp-2">
-                            {snippet.content.substring(0, 100)}...
-                          </p>
-                        )}
-                        <p className="mt-2 text-xs text-gray-400">
-                          Created {new Date(snippet.created_at || '').toLocaleDateString()}
-                        </p>
-                      </div>
-                      <Link
-                        href={`/snippets/${snippet.id}/edit`}
-                        className="ml-4 text-indigo-600 hover:text-indigo-800 text-sm font-medium"
-                      >
-                        Edit
-                      </Link>
-                    </div>
-                  </div>
+                  <SnippetCard key={snippet.id} snippet={snippet} compact={true} />
                 ))}
               </div>
             )}
@@ -177,39 +148,39 @@ function DashboardContent() {
         </div>
 
         {/* Quick Actions */}
-        <div className="mt-8 bg-white rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-medium text-gray-900">Quick Actions</h2>
+        <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow theme-transition">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h2 className="text-lg font-medium text-gray-900 dark:text-white">Quick Actions</h2>
           </div>
           <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Link
                 href="/snippets/new"
-                className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
-                <div className="p-2 bg-indigo-100 rounded-lg">
-                  <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="p-2 bg-indigo-100 dark:bg-indigo-900 rounded-lg">
+                  <svg className="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-sm font-medium text-gray-900">Create New Snippet</h3>
-                  <p className="text-sm text-gray-500">Add a new code snippet to your collection</p>
+                  <h3 className="text-sm font-medium text-gray-900 dark:text-white">Create New Snippet</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Add a new code snippet to your collection</p>
                 </div>
               </Link>
 
               <Link
                 href="/snippets"
-                className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
+                  <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                   </svg>
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-sm font-medium text-gray-900">View All Snippets</h3>
-                  <p className="text-sm text-gray-500">Browse and manage your snippet collection</p>
+                  <h3 className="text-sm font-medium text-gray-900 dark:text-white">View All Snippets</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Browse and manage your snippet collection</p>
                 </div>
               </Link>
             </div>
