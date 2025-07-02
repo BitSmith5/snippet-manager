@@ -19,9 +19,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Get initial session
     const getInitialSession = async () => {
       console.log('AuthContext: Getting initial session...');
-      const { data: { user } } = await supabase.auth.getUser();
-      console.log('AuthContext: Initial user:', user);
-      setUser(user);
+      const { data: { session } } = await supabase.auth.getSession();
+      console.log('AuthContext: Initial session:', session);
+      setUser(session?.user ?? null);
       setLoading(false);
     };
 
@@ -31,7 +31,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         console.log('AuthContext: Auth state change:', event, session?.user);
-        setUser(session?.user ?? null);
+        
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          setUser(session?.user ?? null);
+        } else if (event === 'SIGNED_OUT') {
+          setUser(null);
+        }
+        
         setLoading(false);
       }
     );

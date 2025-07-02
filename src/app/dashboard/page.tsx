@@ -8,6 +8,7 @@ import SnippetCard from '@/components/SnippetCard';
 import { Snippet } from '@/types/snippet';
 
 function DashboardContent() {
+  console.log('DashboardContent: Component rendering');
   const [snippets, setSnippets] = useState<Snippet[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -16,6 +17,7 @@ function DashboardContent() {
   });
 
   useEffect(() => {
+    console.log('DashboardContent: useEffect running');
     // Fetch user snippets
     const fetchSnippets = async () => {
       const { data, error } = await supabase
@@ -44,6 +46,7 @@ function DashboardContent() {
   }, []);
 
   if (loading) {
+    console.log('DashboardContent: Showing loading state');
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>
@@ -51,6 +54,7 @@ function DashboardContent() {
     );
   }
 
+  console.log('DashboardContent: Rendering main content');
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 theme-transition">
       <Header />
@@ -192,6 +196,7 @@ function DashboardContent() {
 }
 
 export default function DashboardPage() {
+  console.log('DashboardPage: Component rendering');
   return (
     <ProtectedRoute>
       <DashboardContent />

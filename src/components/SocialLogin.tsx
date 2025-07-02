@@ -14,23 +14,36 @@ export default function SocialLogin({ onSuccess, onError, loading, setLoading }:
     const [isFacebookLoading, setIsFacebookLoading] = useState(false);
 
     const handleGoogleLogin = async () => {
+        console.log('Google OAuth: Button clicked');
+        console.log('Google OAuth: Supabase client:', !!supabase);
+        console.log('Google OAuth: Environment variables:', {
+            url: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+            key: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+        });
+        
         setIsGoogleLoading(true);
         setLoading?.(true);
         
+        const redirectUrl = `${window.location.origin}/auth/callback`;
+        console.log('Google OAuth: Redirect URL:', redirectUrl);
+        
         try {
+            console.log('Google OAuth: Calling signInWithOAuth...');
             const { data, error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: `${window.location.origin}/dashboard`
+                    redirectTo: redirectUrl
                 }
             });
+
+            console.log('Google OAuth: Response received:', { data, error });
 
             if (error) {
                 console.error('Google login error:', error);
                 onError?.(error.message);
             } else {
                 console.log('Google login initiated:', data);
-                onSuccess?.();
+                // Don't call onSuccess here as the page will redirect
             }
         } catch (err) {
             console.error('Unexpected error during Google login:', err);
@@ -45,11 +58,14 @@ export default function SocialLogin({ onSuccess, onError, loading, setLoading }:
         setIsFacebookLoading(true);
         setLoading?.(true);
         
+        const redirectUrl = `${window.location.origin}/auth/callback`;
+        console.log('Facebook OAuth: Redirect URL:', redirectUrl);
+        
         try {
             const { data, error } = await supabase.auth.signInWithOAuth({
                 provider: 'facebook',
                 options: {
-                    redirectTo: `${window.location.origin}/dashboard`
+                    redirectTo: redirectUrl
                 }
             });
 
@@ -58,7 +74,7 @@ export default function SocialLogin({ onSuccess, onError, loading, setLoading }:
                 onError?.(error.message);
             } else {
                 console.log('Facebook login initiated:', data);
-                onSuccess?.();
+                // Don't call onSuccess here as the page will redirect
             }
         } catch (err) {
             console.error('Unexpected error during Facebook login:', err);
