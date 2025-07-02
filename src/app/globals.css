@@ -17,3 +17,65 @@
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
+
+/* Browser autocomplete styling for dark theme consistency */
+@layer utilities {
+  /* Chrome/Safari autocomplete styling */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px rgb(55 65 81) inset !important;
+    -webkit-text-fill-color: rgb(243 244 246) !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* Firefox autocomplete styling */
+  input:-moz-autofill,
+  input:-moz-autofill:hover,
+  input:-moz-autofill:focus,
+  input:-moz-autofill:active {
+    background-color: rgb(55 65 81) !important;
+    color: rgb(243 244 246) !important;
+  }
+
+  /* Edge autocomplete styling */
+  input:-ms-input-placeholder {
+    color: rgb(156 163 175) !important;
+  }
+
+  /* Dark theme specific autocomplete overrides */
+  .dark input:-webkit-autofill,
+  .dark input:-webkit-autofill:hover,
+  .dark input:-webkit-autofill:focus,
+  .dark input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px rgb(55 65 81) inset !important;
+    -webkit-text-fill-color: rgb(243 244 246) !important;
+  }
+
+  .dark input:-moz-autofill,
+  .dark input:-moz-autofill:hover,
+  .dark input:-moz-autofill:focus,
+  .dark input:-moz-autofill:active {
+    background-color: rgb(55 65 81) !important;
+    color: rgb(243 244 246) !important;
+  }
+
+  /* Ensure autocomplete dropdowns match theme */
+  .dark input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+
+  /* Override any browser default styling for form elements in dark mode */
+  .dark input,
+  .dark textarea,
+  .dark select {
+    background-color: rgb(55 65 81) !important;
+    color: rgb(243 244 246) !important;
+  }
+
+  .dark input::placeholder,
+  .dark textarea::placeholder {
+    color: rgb(156 163 175) !important;
+  }
+}
