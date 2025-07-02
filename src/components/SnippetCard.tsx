@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Snippet } from '@/types/snippet';
 
 type SnippetCardProps = {
@@ -9,9 +10,17 @@ type SnippetCardProps = {
 };
 
 export default function SnippetCard({ snippet, showEditLink = true, compact = false, onLanguageClick }: SnippetCardProps) {
+  const router = useRouter();
+
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.push(`/snippets/${snippet.id}/edit`);
+  };
+
   return (
     <Link href={`/snippets/${snippet.id}`} className="block">
-      <div className={`bg-white dark:bg-gray-800 rounded-lg shadow p-6 hover:shadow-lg transition-shadow theme-transition ${compact ? 'p-4' : ''}`}>
+      <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow theme-transition ${compact ? 'p-4' : ''}`}>
         <div className="flex justify-between items-start">
           <div>
             <h3 className={`font-medium text-gray-900 dark:text-white mb-2 ${compact ? 'text-sm' : 'text-lg'}`}>
@@ -49,13 +58,12 @@ export default function SnippetCard({ snippet, showEditLink = true, compact = fa
           </div>
           
           {showEditLink && (
-            <Link
-              href={`/snippets/${snippet.id}/edit`}
+            <button
+              onClick={handleEditClick}
               className="ml-4 text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 text-sm font-medium"
-              onClick={(e) => e.stopPropagation()}
             >
               Edit
-            </Link>
+            </button>
           )}
         </div>
       </div>

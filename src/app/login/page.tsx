@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { loginSchema } from '@/types/snippet';
 import { validateData } from '@/lib/validation';
+import SocialLogin from '@/components/SocialLogin';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -115,6 +116,13 @@ export default function LoginPage() {
                 >
                     {loading ? 'Logging in...' : 'Login'}
                 </button>
+
+                <SocialLogin 
+                    onSuccess={() => router.push('/dashboard')}
+                    onError={setError}
+                    loading={loading}
+                    setLoading={setLoading}
+                />
                 
                 <div className="mt-4 text-center">
                     <p className="text-sm text-gray-600 dark:text-gray-400">
