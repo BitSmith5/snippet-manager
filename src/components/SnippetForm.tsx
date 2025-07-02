@@ -25,6 +25,13 @@ export default function SnippetForm({ snippet, mode }: SnippetFormProps) {
     setLoading(true);
     setError('');
 
+    // UI-level required check
+    if (!title.trim() || !content.trim()) {
+      setError('Title and code content are required.');
+      setLoading(false);
+      return;
+    }
+
     // Prepare form data
     const formData = {
       title: title.trim(),
@@ -59,20 +66,22 @@ export default function SnippetForm({ snippet, mode }: SnippetFormProps) {
         if (error) throw error;
         router.push(`/snippets/${data.id}`);
       } else {
+        const user = (await supabase.auth.getUser()).data.user;
         const { error } = await supabase
           .from('snippets')
           .update({
             ...validation.data,
-            language: validation.data.language || null,
-            updated_at: new Date().toISOString(),
+            language: validation.data.language || null
           })
-          .eq('id', snippet!.id);
+          .eq('id', snippet!.id)
+          .eq('user_id', user?.id);
 
         if (error) throw error;
         router.push(`/snippets/${snippet!.id}`);
       }
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      console.error('Supabase update error:', err);
+      setError(err && typeof err === 'object' && 'message' in err ? (err as any).message : JSON.stringify(err) || 'An error occurred');
     } finally {
       setLoading(false);
     }

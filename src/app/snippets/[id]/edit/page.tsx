@@ -7,13 +7,10 @@ import SnippetForm from '@/components/SnippetForm';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Snippet } from '@/types/snippet';
 
-function EditSnippetContent() {
-  const params = useParams();
+function EditSnippetContent({ snippetId }: { snippetId: string }) {
   const [snippet, setSnippet] = useState<Snippet | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
-  const snippetId = params.id as string;
 
   useEffect(() => {
     const fetchSnippet = async () => {
@@ -71,9 +68,12 @@ function EditSnippetContent() {
 }
 
 export default function EditSnippetPage() {
+  const params = useParams();
+  const snippetId = params.id as string;
+
   return (
     <ProtectedRoute>
-      <EditSnippetContent />
+      <EditSnippetContent snippetId={snippetId} />
     </ProtectedRoute>
   );
 }
