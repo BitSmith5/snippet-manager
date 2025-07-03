@@ -62,30 +62,46 @@ function SnippetListContent() {
         {availableLanguages.length > 0 && (
           <div className="mb-6">
             <div className="flex items-center space-x-4">
-              <label htmlFor="language-filter" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Filter by language:
-              </label>
-              <select
-                id="language-filter"
-                value={selectedLanguage}
-                onChange={(e) => setSelectedLanguage(e.target.value)}
-                className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800"
-              >
-                <option value="">All snippets</option>
-                {availableLanguages.map((language) => (
-                  <option key={language} value={language}>
-                    {language}
-                  </option>
-                ))}
-              </select>
-              {selectedLanguage && (
-                <button
-                  onClick={() => setSelectedLanguage('')}
-                  className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+              <div className="flex items-center space-x-4 flex-shrink-0">
+                <label htmlFor="language-filter" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Filter:
+                </label>
+                <select
+                  id="language-filter"
+                  value={selectedLanguage}
+                  onChange={(e) => setSelectedLanguage(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800"
                 >
-                  Clear filter
-                </button>
-              )}
+                  <option value="">All snippets</option>
+                  {availableLanguages.map((language) => (
+                    <option key={language} value={language}>
+                      {language}
+                    </option>
+                  ))}
+                </select>
+                {selectedLanguage && (
+                  <button
+                    onClick={() => setSelectedLanguage('')}
+                    className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                  >
+                    Clear filter
+                  </button>
+                )}
+              </div>
+              <div className="flex-1 flex justify-end">
+                <input
+                  type="text"
+                  placeholder="Search snippets..."
+                  className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 w-full max-w-xs"
+                  onChange={(e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    setFilteredSnippets(snippets.filter(snippet => 
+                      snippet.title.toLowerCase().includes(searchTerm) ||
+                      (snippet.language && snippet.language.toLowerCase().includes(searchTerm))
+                    ));
+                  }}
+                />
+              </div>
             </div>
           </div>
         )}
