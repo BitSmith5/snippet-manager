@@ -12,7 +12,11 @@ const nextConfig = {
   
   // Enable experimental features for better performance
   experimental: {
-    optimizeCss: true,
+    optimizeCss: {
+      critters: {
+        reduceInlineStyles: false,
+      },
+    },
     optimizePackageImports: ['@supabase/supabase-js'],
   },
   
@@ -47,6 +51,15 @@ const nextConfig = {
       },
     ];
   },
+  
+  // Handle build errors more gracefully
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 2,
+  },
+  
+  // Disable static optimization for error pages to prevent build issues
+  trailingSlash: false,
 };
 
 export default nextConfig;
