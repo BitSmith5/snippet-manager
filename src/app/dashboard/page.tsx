@@ -8,7 +8,6 @@ import SnippetCard from '@/components/SnippetCard';
 import { Snippet } from '@/types/snippet';
 
 function DashboardContent() {
-  console.log('DashboardContent: Component rendering');
   const [snippets, setSnippets] = useState<Snippet[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -17,8 +16,6 @@ function DashboardContent() {
   });
 
   useEffect(() => {
-    console.log('DashboardContent: useEffect running');
-    // Fetch user snippets
     const fetchSnippets = async () => {
       const { data, error } = await supabase
         .from('snippets')
@@ -46,7 +43,6 @@ function DashboardContent() {
   }, []);
 
   if (loading) {
-    console.log('DashboardContent: Showing loading state');
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>
@@ -54,14 +50,11 @@ function DashboardContent() {
     );
   }
 
-  console.log('DashboardContent: Rendering main content');
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 theme-transition">
       <Header />
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Dashboard Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 theme-transition">
             <div className="flex items-center">
@@ -111,7 +104,6 @@ function DashboardContent() {
           </div>
         </div>
 
-        {/* Recent Snippets */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow theme-transition">
           <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <div className="flex justify-between items-center">
@@ -151,7 +143,6 @@ function DashboardContent() {
           </div>
         </div>
 
-        {/* Quick Actions */}
         <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow theme-transition">
           <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <h2 className="text-lg font-medium text-gray-900 dark:text-white">Quick Actions</h2>
@@ -196,7 +187,6 @@ function DashboardContent() {
 }
 
 export default function DashboardPage() {
-  console.log('DashboardPage: Component rendering');
   return (
     <ProtectedRoute>
       <DashboardContent />

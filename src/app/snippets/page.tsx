@@ -22,7 +22,6 @@ function SnippetListContent() {
         const snippetsData = data || [];
         setSnippets(snippetsData);
         
-        // Extract all unique languages
         const allLanguages = snippetsData
           .map(snippet => snippet.language)
           .filter((language): language is string => !!language)

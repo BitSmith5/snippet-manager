@@ -14,10 +14,8 @@ export default function LoginPage() {
     const [error, setError] = useState('');
 
     async function handleLogin() {
-        // Clear previous errors
         setError('');
         
-        // Validate form data using Zod
         const formData = { email, password };
         const validation = validateData(loginSchema, formData);
 
@@ -29,38 +27,24 @@ export default function LoginPage() {
         setLoading(true);
         
         try {
-            // Check if Supabase is properly configured
             if (!supabase) {
                 throw new Error('Supabase client is not configured. Please check your environment variables.');
             }
 
-            // Check if environment variables are set
             if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
                 throw new Error('Supabase environment variables are not configured. Please create a .env.local file with NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.');
             }
-
-            console.log('Attempting login with:', { email, password: '***' });
-            console.log('Supabase URL configured:', !!process.env.NEXT_PUBLIC_SUPABASE_URL);
-            console.log('Supabase key configured:', !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
             
             const { data, error } = await supabase.auth.signInWithPassword({ 
                 email: validation.data.email, 
                 password: validation.data.password 
             });
             
-            console.log('Login response:', { data, error });
-            
             if (error) {
                 console.error('Login error:', error);
                 setError(error.message);
             } else {
-                console.log('Login successful:', data);
-                // Debug: Check cookies
-                console.log('Cookies after login:', document.cookie);
-                
-                // Add a small delay to ensure cookies are set
                 setTimeout(() => {
-                    console.log('Redirecting to dashboard...');
                     router.push('/dashboard');
                 }, 100);
             }

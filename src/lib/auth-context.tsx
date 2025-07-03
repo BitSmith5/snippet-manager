@@ -16,22 +16,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
     const getInitialSession = async () => {
-      console.log('AuthContext: Getting initial session...');
       const { data: { session } } = await supabase.auth.getSession();
-      console.log('AuthContext: Initial session:', session);
       setUser(session?.user ?? null);
       setLoading(false);
     };
 
     getInitialSession();
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log('AuthContext: Auth state change:', event, session?.user);
-        
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
           setUser(session?.user ?? null);
         } else if (event === 'SIGNED_OUT') {

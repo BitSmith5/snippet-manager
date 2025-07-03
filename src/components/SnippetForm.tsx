@@ -25,21 +25,18 @@ export default function SnippetForm({ snippet, mode }: SnippetFormProps) {
     setLoading(true);
     setError('');
 
-    // UI-level required check
     if (!title.trim() || !content.trim()) {
       setError('Title and code content are required.');
       setLoading(false);
       return;
     }
 
-    // Prepare form data
     const formData = {
       title: title.trim(),
       content: content.trim(),
       language: language.trim() || undefined,
     };
 
-    // Validate form data using Zod
     const schema = mode === 'create' ? createSnippetSchema : updateSnippetSchema;
     const validation = validateData(schema, formData);
 

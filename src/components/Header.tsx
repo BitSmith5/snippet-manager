@@ -22,6 +22,7 @@ export default function Header() {
   };
 
   const handleThemeToggle = () => {
+    setIsMenuOpen(!isMenuOpen);
     toggleTheme();
   };
 
@@ -43,7 +44,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center space-x-8">
-            <Link href="/dashboard" className="text-2xl font-bold text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+            <Link href="/" className="text-2xl font-bold text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               Snippet Manager
             </Link>
             {user && (

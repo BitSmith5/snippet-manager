@@ -20,7 +20,7 @@ export default function SnippetCard({ snippet, showEditLink = true, compact = fa
 
   return (
     <Link href={`/snippets/${snippet.id}`} className="block">
-      <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow theme-transition ${compact ? 'p-4' : ''}`}>
+      <div className={`bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow theme-transition ${compact ? 'p-4' : ''}`}>
         <div className="flex justify-between items-start">
           <div>
             <h3 className={`font-medium text-gray-900 dark:text-white mb-2 ${compact ? 'text-sm' : 'text-lg'}`}>
