@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import Header from '@/components/Header';
 import Link from 'next/link';
@@ -9,39 +9,65 @@ import { Snippet } from '@/types/snippet';
 
 function SnippetListContent() {
   const [snippets, setSnippets] = useState<Snippet[]>([]);
-  const [filteredSnippets, setFilteredSnippets] = useState<Snippet[]>([]);
   const [selectedLanguage, setSelectedLanguage] = useState<string>('');
-  const [availableLanguages, setAvailableLanguages] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
-  useEffect(() => {
-    const fetchSnippets = async () => {
-        const { data, error } = await supabase
-            .from('snippets')
-            .select('*');
-        if (error) console.error(error);
-        const snippetsData = data || [];
-        setSnippets(snippetsData);
-        
-        const allLanguages = snippetsData
-          .map(snippet => snippet.language)
-          .filter((language): language is string => !!language)
-          .filter((language, index, arr) => arr.indexOf(language) === index)
-          .sort();
-        setAvailableLanguages(allLanguages);
-    };
-    fetchSnippets();
+  // Memoize expensive operations
+  const availableLanguages = useMemo(() => {
+    return snippets
+      .map(snippet => snippet.language)
+      .filter((language): language is string => !!language)
+      .filter((language, index, arr) => arr.indexOf(language) === index)
+      .sort();
+  }, [snippets]);
+
+  const filteredSnippets = useMemo(() => {
+    let filtered = snippets;
+    
+    // Filter by language
+    if (selectedLanguage) {
+      filtered = filtered.filter(snippet => snippet.language === selectedLanguage);
+    }
+    
+    // Filter by search term
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(snippet => 
+        snippet.title.toLowerCase().includes(term) ||
+        (snippet.language && snippet.language.toLowerCase().includes(term))
+      );
+    }
+    
+    return filtered;
+  }, [snippets, selectedLanguage, searchTerm]);
+
+  const fetchSnippets = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('snippets')
+      .select('*');
+    if (error) console.error(error);
+    setSnippets(data || []);
+  }, []);
+
+  const handleLanguageFilter = useCallback((language: string) => {
+    setSelectedLanguage(language);
+  }, []);
+
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  }, []);
+
+  const handleLanguageSelectChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedLanguage(e.target.value);
+  }, []);
+
+  const clearFilter = useCallback(() => {
+    setSelectedLanguage('');
   }, []);
 
   useEffect(() => {
-    if (selectedLanguage) {
-      const filtered = snippets.filter(snippet => 
-        snippet.language === selectedLanguage
-      );
-      setFilteredSnippets(filtered);
-    } else {
-      setFilteredSnippets(snippets);
-    }
-  }, [snippets, selectedLanguage]);
+    fetchSnippets();
+  }, [fetchSnippets]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 theme-transition">
@@ -68,7 +94,7 @@ function SnippetListContent() {
                 <select
                   id="language-filter"
                   value={selectedLanguage}
-                  onChange={(e) => setSelectedLanguage(e.target.value)}
+                  onChange={handleLanguageSelectChange}
                   className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800"
                 >
                   <option value="">All snippets</option>
@@ -80,7 +106,7 @@ function SnippetListContent() {
                 </select>
                 {selectedLanguage && (
                   <button
-                    onClick={() => setSelectedLanguage('')}
+                    onClick={clearFilter}
                     className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                   >
                     Clear filter
@@ -91,14 +117,9 @@ function SnippetListContent() {
                 <input
                   type="text"
                   placeholder="Search snippets..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
                   className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 w-full max-w-xs"
-                  onChange={(e) => {
-                    const searchTerm = e.target.value.toLowerCase();
-                    setFilteredSnippets(snippets.filter(snippet => 
-                      snippet.title.toLowerCase().includes(searchTerm) ||
-                      (snippet.language && snippet.language.toLowerCase().includes(searchTerm))
-                    ));
-                  }}
                 />
               </div>
             </div>
@@ -135,7 +156,7 @@ function SnippetListContent() {
                 {selectedLanguage && (
                   <div className="mt-6">
                     <button
-                      onClick={() => setSelectedLanguage('')}
+                      onClick={clearFilter}
                       className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600"
                     >
                       Clear filter
@@ -151,7 +172,7 @@ function SnippetListContent() {
               <SnippetCard 
                 key={snippet.id} 
                 snippet={snippet} 
-                onLanguageClick={(language) => setSelectedLanguage(language)}
+                onLanguageClick={handleLanguageFilter}
               />
             ))}
           </div>

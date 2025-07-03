@@ -34,5 +34,8 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.redirect(new URL('/dashboard', request.url));
+  // Construct the redirect URL using the request origin to ensure we stay on the same domain
+  const origin = request.headers.get('origin') || 
+                 `${request.headers.get('x-forwarded-proto') || 'https'}://${request.headers.get('host')}`;
+  return NextResponse.redirect(new URL('/dashboard', origin));
 } 

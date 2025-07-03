@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "setup": "node setup-env.js"
+    "setup": "node setup-env.js",
+    "analyze": "ANALYZE=true next build",
+    "build:analyze": "cross-env ANALYZE=true next build"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",
@@ -23,9 +25,11 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@next/bundle-analyzer": "^14.1.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cross-env": "^7.0.3",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "typescript": "^5"
