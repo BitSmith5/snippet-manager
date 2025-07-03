@@ -32,7 +32,7 @@ function DashboardContent() {
         setSnippets(data || []);
         setStats({
           totalSnippets: data?.length || 0,
-          recentSnippets: data?.filter(s => {
+          recentSnippets: data?.filter((s: Snippet) => {
             const weekAgo = new Date();
             weekAgo.setDate(weekAgo.getDate() - 7);
             return new Date(s.created_at || '') > weekAgo;
