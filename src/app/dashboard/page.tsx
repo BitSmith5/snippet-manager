@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import Header from '@/components/Header';
@@ -10,10 +10,22 @@ import { Snippet } from '@/types/snippet';
 function DashboardContent() {
   const [snippets, setSnippets] = useState<Snippet[]>([]);
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({
-    totalSnippets: 0,
-    recentSnippets: 0,
-  });
+
+  // Memoize expensive stats calculation
+  const stats = useMemo(() => {
+    const totalSnippets = snippets.length;
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    
+    const recentSnippets = snippets.filter((s: Snippet) => {
+      return new Date(s.created_at || '') > weekAgo;
+    }).length;
+
+    return {
+      totalSnippets,
+      recentSnippets,
+    };
+  }, [snippets]);
 
   useEffect(() => {
     const fetchSnippets = async () => {
@@ -27,14 +39,6 @@ function DashboardContent() {
         console.error('Error fetching snippets:', error);
       } else {
         setSnippets(data || []);
-        setStats({
-          totalSnippets: data?.length || 0,
-          recentSnippets: data?.filter((s: Snippet) => {
-            const weekAgo = new Date();
-            weekAgo.setDate(weekAgo.getDate() - 7);
-            return new Date(s.created_at || '') > weekAgo;
-          }).length || 0,
-        });
       }
       setLoading(false);
     };

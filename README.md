@@ -70,15 +70,15 @@ src/
 │   ├── snippets/          # Snippet management (optimized filtering)
 │   └── layout.tsx         # Root layout
 ├── components/            # Reusable React components
-│   ├── Header.tsx         # Navigation header
-│   ├── SnippetCard.tsx    # Snippet display component (memoized)
+│   ├── Header.tsx         # Navigation header (optimized with useCallback)
+│   ├── SnippetCard.tsx    # Snippet display component (memoized with React.memo)
 │   ├── SnippetForm.tsx    # Create/edit form
 │   └── SocialLogin.tsx    # OAuth login buttons
 ├── lib/                   # Utility libraries
-│   ├── auth-context.tsx   # Authentication context (optimized)
+│   ├── auth-context.tsx   # Authentication context (optimized with useMemo)
 │   ├── supabase.ts        # Supabase client
 │   ├── validation.ts      # Form validation utilities
-│   └── theme-context.tsx  # Theme management (optimized)
+│   └── theme-context.tsx  # Theme management (optimized with useMemo)
 ├── types/                 # TypeScript type definitions
 │   └── snippet.ts         # Snippet and auth schemas
 └── middleware.ts          # Route protection middleware
@@ -146,6 +146,13 @@ const SnippetCard = memo(function SnippetCard({ snippet, ...props }) {
 const stats = useMemo(() => {
   return calculateStats(snippets);
 }, [snippets]);
+
+// Memoized context values
+const value = useMemo(() => ({
+  user,
+  loading,
+  signOut,
+}), [user, loading]);
 ```
 
 ### Form Validation
@@ -171,10 +178,18 @@ export const createSnippetSchema = z.object({
 ## ⚡ Performance Optimizations
 
 ### React Performance
-- **Component Memoization**: `React.memo` for SnippetCard and other list components
-- **Event Handler Optimization**: `useCallback` for stable function references
-- **Expensive Calculation Caching**: `useMemo` for stats and filtering operations
-- **Context Optimization**: Memoized context values to prevent unnecessary re-renders
+- **Component Memoization**: `React.memo` for SnippetCard to prevent unnecessary re-renders in lists
+- **Event Handler Optimization**: `useCallback` for stable function references in Header, SnippetCard, and SnippetsList
+- **Expensive Calculation Caching**: `useMemo` for dashboard stats and snippet filtering operations
+- **Context Optimization**: Memoized context values in auth-context and theme-context to prevent unnecessary re-renders
+
+### Implemented Optimizations
+- **SnippetCard**: Memoized with React.memo and optimized event handlers with useCallback
+- **Dashboard**: Memoized stats calculation with useMemo to prevent recalculation on every render
+- **Snippets List**: Memoized filtering logic combining language and search filters with useMemo
+- **Header**: Optimized all event handlers with useCallback for better performance
+- **Auth Context**: Memoized context value to prevent unnecessary re-renders of consuming components
+- **Theme Context**: Memoized context value and toggleTheme function with useCallback
 
 ### Next.js Optimizations
 - **Bundle Compression**: Gzip compression enabled
@@ -217,10 +232,17 @@ npm run build:analyze
 ## 📈 Performance Metrics
 
 ### Optimizations Implemented
-- **50-70% reduction** in unnecessary re-renders through memoization
-- **20-30% faster** initial load times with bundle optimization
-- **40-60% improvement** in data filtering performance
-- **Reduced memory usage** with optimized context providers
+- **Reduced unnecessary re-renders** through React.memo and useCallback optimizations
+- **Faster filtering performance** with memoized calculations in snippets list
+- **Improved context performance** with memoized context values
+- **Optimized event handling** with stable function references
+
+### Specific Performance Improvements
+- **SnippetCard**: Prevents re-renders when props haven't changed using React.memo
+- **Dashboard Stats**: Memoized calculation prevents expensive operations on every render
+- **Snippet Filtering**: Combined language and search filtering optimized with useMemo
+- **Context Providers**: Memoized values prevent unnecessary re-renders of consuming components
+- **Event Handlers**: Stable references prevent child component re-renders
 
 ### Monitoring Tools
 - **Bundle Analyzer**: Track JavaScript bundle sizes

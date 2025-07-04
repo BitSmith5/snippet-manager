@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { useTheme } from '@/lib/theme-context';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 export default function Header() {
   const router = useRouter();
@@ -11,20 +11,28 @@ export default function Header() {
   const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     await signOut();
     router.push('/login');
     setIsMenuOpen(false);
-  };
+  }, [signOut, router]);
 
-  const toggleMenu = () => {
+  const toggleMenu = useCallback(() => {
     setIsMenuOpen(!isMenuOpen);
-  };
+  }, [isMenuOpen]);
 
-  const handleThemeToggle = () => {
-    setIsMenuOpen(!isMenuOpen);
+  const handleThemeToggle = useCallback(() => {
+    setIsMenuOpen(false);
     toggleTheme();
-  };
+  }, [toggleTheme]);
+
+  const handleMenuClose = useCallback(() => {
+    setIsMenuOpen(false);
+  }, []);
+
+  const handleClickOutside = useCallback(() => {
+    setIsMenuOpen(false);
+  }, []);
 
   if (loading) {
     return (
@@ -93,21 +101,21 @@ export default function Header() {
                       <Link
                         href="/dashboard"
                         className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                        onClick={() => setIsMenuOpen(false)}
+                        onClick={handleMenuClose}
                       >
                         Dashboard
                       </Link>
                       <Link
                         href="/snippets"
                         className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                        onClick={() => setIsMenuOpen(false)}
+                        onClick={handleMenuClose}
                       >
                         Snippets
                       </Link>
                       <Link
                         href="/snippets/new"
                         className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                        onClick={() => setIsMenuOpen(false)}
+                        onClick={handleMenuClose}
                       >
                         New Snippet
                       </Link>
@@ -167,7 +175,7 @@ export default function Header() {
       {isMenuOpen && (
         <div 
           className="fixed inset-0 z-40" 
-          onClick={() => setIsMenuOpen(false)}
+          onClick={handleClickOutside}
         />
       )}
     </header>

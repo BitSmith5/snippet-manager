@@ -1,5 +1,5 @@
 'use client';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react';
 
 type Theme = 'light' | 'dark';
 
@@ -42,14 +42,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [theme, mounted]);
 
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
-  };
+  }, []);
 
-  const contextValue: ThemeContextType = {
+  // Memoize context value to prevent unnecessary re-renders
+  const contextValue: ThemeContextType = useMemo(() => ({
     theme,
     toggleTheme,
-  };
+  }), [theme, toggleTheme]);
 
   return (
     <ThemeContext.Provider value={contextValue}>
