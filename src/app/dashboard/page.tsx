@@ -11,21 +11,14 @@ function DashboardContent() {
   const [snippets, setSnippets] = useState<Snippet[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Memoize expensive stats calculation
-  const stats = useMemo(() => {
-    const totalSnippets = snippets.length;
-    const weekAgo = new Date();
-    weekAgo.setDate(weekAgo.getDate() - 7);
-    
-    const recentSnippets = snippets.filter((s: Snippet) => {
-      return new Date(s.created_at || '') > weekAgo;
-    }).length;
-
-    return {
-      totalSnippets,
-      recentSnippets,
-    };
-  }, [snippets]);
+  // Calculate stats
+  const totalSnippets = snippets.length;
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 7);
+  
+  const recentSnippets = snippets.filter((s: Snippet) => {
+    return new Date(s.created_at || '') > weekAgo;
+  }).length;
 
   useEffect(() => {
     const fetchSnippets = async () => {
@@ -69,7 +62,7 @@ function DashboardContent() {
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Total Snippets</p>
-                <p className="text-2xl font-semibold text-gray-900 dark:text-white">{stats.totalSnippets}</p>
+                <p className="text-2xl font-semibold text-gray-900 dark:text-white">{totalSnippets}</p>
               </div>
             </div>
           </div>
@@ -83,7 +76,7 @@ function DashboardContent() {
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Recent (7 days)</p>
-                <p className="text-2xl font-semibold text-gray-900 dark:text-white">{stats.recentSnippets}</p>
+                <p className="text-2xl font-semibold text-gray-900 dark:text-white">{recentSnippets}</p>
               </div>
             </div>
           </div>
