@@ -53,21 +53,21 @@ function SnippetListContent() {
     return filtered;
   }, [snippets, selectedLanguage, searchTerm]);
 
-  const handleLanguageFilterChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleLanguageFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedLanguage(e.target.value);
-  }, []);
+  };
 
-  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-  }, []);
+  };
 
-  const handleClearFilter = useCallback(() => {
+  const handleClearFilter = () => {
     setSelectedLanguage('');
-  }, []);
+  };
 
-  const handleLanguageClick = useCallback((language: string) => {
+  const handleLanguageClick = (language: string) => {
     setSelectedLanguage(language);
-  }, []);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 theme-transition">
